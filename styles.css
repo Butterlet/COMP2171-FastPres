@@ -1,0 +1,106 @@
+body {
+    font-family: Arial, sans-serif;
+    background: url('images/background.svg') no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    flex-direction: column;
+    color: #333;
+}
+
+.signup-container {
+    max-width: 400px;
+    width: 100%;
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+h2 {
+    margin-bottom: 20px;
+    font-size: 2em;
+    color: #05668D;
+    font-weight: bold;
+}
+
+input {
+    display: block;
+    width: 90%;
+    margin: 10px auto;
+    padding: 12px;
+    font-size: 1em;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+}
+
+button {
+    padding: 12px 20px;
+    font-size: 1em;
+    background-color: #02C39A;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: 15px;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background-color: #028090;
+}
+
+.terms {
+    font-size: 0.9em;
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Center the checkbox and label horizontally */
+    align-items: center; /* Align the items vertically in the center */
+    margin-top: 10px;
+}
+
+.terms input {
+    width: auto;
+    margin-right: 10px;
+}
+
+.terms label {
+    display: inline;
+}
+
+.terms a {
+    color: #05668D;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.terms a:hover {
+    text-decoration: underline;
+}
+
+.login-link {
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+.login-link a {
+    color: #05668D;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 500px) {
+    .signup-container {
+        width: 80%;
+    }
+}

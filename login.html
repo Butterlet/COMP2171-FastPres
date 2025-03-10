@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - FastPres</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <img src="images/fastlogo.png" width="150" height="auto" alt="FastPres Logo" class="logo">
+    
+    <div class="signup-container"> 
+        <h2>Login</h2>
+        <input type="email" id="email" placeholder="Email Address" required>
+        <input type="password" id="password" placeholder="Password" required>
+        
+        <button onclick="validateLogin()">Login</button>
+        
+        <div class="signup-link" style="margin-top: 15px;"> <!-- Added space between login button and signup link -->
+            Don't have an account? <a href="create.html">Sign up here</a>
+        </div>
+    </div>
+    
+    <script>
+        function validateLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Email validation pattern
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                alert("Please enter a valid email address.");
+                return;
+            }
+            
+            if (password.trim() === "") {
+                alert("Please enter a password.");
+                return;
+            }
+            
+            alert("Login successful!");
+            window.location.href = "index.html"; // Redirect after successful login
+        }
+    </script>
+</body>
+</html>
