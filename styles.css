@@ -59,9 +59,9 @@ button:hover {
 
 .terms {
     font-size: 0.9em;
-    display: flex; /* Use flexbox */
-    justify-content: center; /* Center the checkbox and label horizontally */
-    align-items: center; /* Align the items vertically in the center */
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
     margin-top: 10px;
 }
 

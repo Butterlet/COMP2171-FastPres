@@ -21,7 +21,7 @@
             <label for="agree-terms">I agree to the <a href="terms.html" target="_blank">Terms of Use</a></label>
         </div>
         
-        <button onclick="validateSignup()">Sign Up</button> <!-- Call validateSignup function -->
+        <button onclick="validateSignup()">Sign Up</button> 
         
         <div class="login-link">
             Already have an account? <a href="login.html">Login here</a>
@@ -33,29 +33,26 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const termsCheckbox = document.getElementById('agree-terms');
-            
-            // Email validation pattern
+
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailPattern.test(email)) {
                 alert("Please enter a valid email address.");
                 return;
             }
-            
-            // Password validation pattern
+
             const passwordPattern = /^(?=.*[A-Z])(?=.*[!@#$%^&*?])[A-Za-z\d!@#$%^&*?]{10,}$/;
             if (!passwordPattern.test(password)) {
                 alert("Password must be at least 10 characters long, contain at least one capital letter, and one special symbol.");
                 return;
             }
             
-            // Check if terms are agreed
             if (!termsCheckbox.checked) {
                 alert("You must agree to the Terms of Use to proceed.");
                 return;
             }
             
             alert("Account created successfully!");
-            window.location.href = "index.html"; // Redirect after successful signup
+            window.location.href = "index.html"; 
         }
     </script>
 </body>

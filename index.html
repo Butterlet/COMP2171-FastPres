@@ -46,7 +46,6 @@
     </style>
     <script>
         function loadServices() {
-            // Placeholder for service items, in the future, you can fetch from the server
             let services = [
                 { name: "Upload Prescription", image: "images/upload_prescription.png" },
                 { name: "View Prescription History", image: "images/view_history.png" },
@@ -55,7 +54,7 @@
             ];
 
             let serviceContainer = document.querySelector('.service-container');
-            serviceContainer.innerHTML = ''; // Clear the container before adding services
+            serviceContainer.innerHTML = ''; 
 
             services.forEach(service => {
                 let div = document.createElement('div');
@@ -69,11 +68,10 @@
         }
 
         function navigateToService(service) {
-            // Placeholder functionality to navigate to the respective pages (replace with real pages later)
             alert(service + " selected!");
         }
 
-        window.onload = loadServices; // Load the services when the page loads
+        window.onload = loadServices; 
     </script>
 </head>
 <body>
@@ -92,7 +90,6 @@
     <h1>Welcome to FastPres</h1>
     <p>Your trusted partner for hassle-free prescription deliveries</p>
     <div class="service-container">
-        <!-- This will be populated dynamically with services -->
     </div>
 </body>
 </html>
