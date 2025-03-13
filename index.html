@@ -1,82 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FastPres - Prescription Delivery</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    <style>
-        .service-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-        .service {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-        .service img {
-            display: block;
-            margin: 0 auto;
-            border-radius: 50%;
-            border: 2px solid rgb(255, 255, 255);
-            max-width: 100%;
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            cursor: pointer;
-            transition: all 0.3s ease-in-out;
-        }
-        .service img:hover {
-            transform: scale(1.2);
-        }
-        .service-items {
-            margin: 20px;
-            padding: 20px;
-        }
-        h1 {
-            font-size: 350%;
-            color: #05668D;
-        }
-        p {
-            font-size: 150%;
-        }
-    </style>
-    <script>
-        function loadServices() {
-            let services = [
-                { name: "Upload Prescription", image: "images/upload_prescription.png" },
-                { name: "View Prescription History", image: "images/view_history.png" },
-                { name: "Track Order Status", image: "images/track_order.png" },
-                { name: "Cancel Order", image: "images/cancel_order.png" }
-            ];
-
-            let serviceContainer = document.querySelector('.service-container');
-            serviceContainer.innerHTML = ''; 
-
-            services.forEach(service => {
-                let div = document.createElement('div');
-                div.className = 'service-items';
-                div.innerHTML = `
-                    <img src="${service.image}" alt="${service.name}" onclick="navigateToService('${service.name}')">
-                    <p>${service.name}</p>
-                `;
-                serviceContainer.appendChild(div);
-            });
-        }
-
-        function navigateToService(service) {
-            alert(service + " selected!");
-        }
-
-        window.onload = loadServices; 
-    </script>
+    <link rel="stylesheet" href="main-styles.css">
 </head>
 <body>
     <header>
-        <img src="images/fastlogo.png" width="12%" height="12%" alt="FastPres Logo">
+        <img src="images/fastlogo.png" alt="FastPres Logo">
         <nav>
             <a href="index.html">Home</a>
             <a href="upload.html">Upload Prescription</a>
@@ -86,10 +18,28 @@
             <a href="login.html">Logout</a>
         </nav>
     </header>
-    <br>
-    <h1>Welcome to FastPres</h1>
-    <p>Your trusted partner for hassle-free prescription deliveries</p>
-    <div class="service-container">
+
+    <div class="main-content">
+        <div class="hero">
+            <h1>Welcome to FastPres</h1>
+            <p>Your trusted partner for hassle-free prescription deliveries</p>
+        </div>
+
+        <div class="service-container">
+            <div class="service">
+                <img src="images/main-pharma.jpg" alt="image 1">
+            </div>
+            <div class="service">
+                <img src="images/main-pills.png" alt="image 2">
+            </div>
+            <div class="service">
+                <img src="images/main-pharma-2.jpg" alt="image 3">
+            </div>
+        </div>
     </div>
+--
+    <footer>
+        <p>© 2025 FastPres. All rights reserved.</p>
+    </footer>
 </body>
 </html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription Upload - FastPres</title>
+    <link rel="stylesheet" href="upload-styles.css">
+</head>
+<body>
+
+<header>
+    <img src="images/fastlogo.png" alt="FastPres Logo">
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="upload.html">Upload Prescription</a>
+        <a href="history.html">View Prescription History</a>
+        <a href="track.html">Track Order Status</a>
+        <a href="cancel.html">Cancel Order</a>
+        <a href="login.html">Logout</a>
+    </nav>
+</header>
+
+<div class="main-content">
+    <div class="upload-container">
+        <h2>Upload Your Prescription</h2>
+        <p>Please upload a valid prescription document for verification. Accepted file formats: JPEG, PNG, PDF.</p>
+
+        <form id="uploadForm" enctype="multipart/form-data" method="POST" action="uploadPrescription.php">
+            <label for="prescriptionFile">Choose a file to upload:</label>
+            <input type="file" id="prescriptionFile" name="prescriptionFile" accept=".jpg, .jpeg, .png, .pdf" required>
+            <br><br>
+            <button type="submit">Upload Prescription</button>
+        </form>
+
+        <div id="message" class="message"></div>
+        <div id="error" class="error"></div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2025 FastPres. All rights reserved.</p>
+</footer>
+
+<script>
+    document.getElementById('uploadForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        var fileInput = document.getElementById('prescriptionFile');
+        var file = fileInput.files[0];
+        
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.pdf)$/i;
+        if (!allowedExtensions.exec(file.name)) {
+            document.getElementById('error').textContent = 'Invalid file format. Please upload a JPEG, PNG, or PDF file.';
+            return;
+        }
+
+        document.getElementById('message').textContent = '';
+        document.getElementById('error').textContent = '';
+        
+        var formData = new FormData();
+        formData.append('prescriptionFile', file);
+
+        setTimeout(function() {
+            
+            var success = Math.random() > 0.2; 
+
+            if (success) {
+                document.getElementById('message').textContent = 'Prescription uploaded successfully!';
+            } else {
+                document.getElementById('error').textContent = 'Upload failed due to a system error. Please try again later.';
+            }
+        }, 1000); 
+    });
+</script>
+
+</body>
+</html>
