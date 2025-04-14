@@ -1,0 +1,113 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #A9D6E5; 
+}
+
+header {
+    background-color: #05668D; 
+    padding: 20px 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+        
+header img {
+    width: 100px;
+}
+       
+nav {
+    margin-top: 10px;
+}
+        
+nav a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+
+main {
+    background-color: #A9D6E5;
+    min-height: 100vh; 
+    padding-top: 150px;
+    padding-bottom: 60px;
+}
+
+.main {
+    padding: 40px 20px;
+}
+
+.main h1 {
+    font-size: 2.5em;
+    color: #05668D; 
+}
+
+.main p {
+    font-size: 1.2em;
+    color: #05668D; 
+}
+
+.prescription-history {
+    padding: 40px 20px;
+}
+
+.prescription-history h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #05668D; 
+}
+
+.prescription-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center items horizontally */
+    justify-content: center; /* Center items vertically */
+    gap: 20px; /* Add spacing between items */
+    margin: 0 auto; /* Center the container itself */
+    padding: 20px;
+}
+
+.prescription-item {
+    background-color: white;
+    padding: 20px;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 15px;
+    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center; /* Center text inside the item */
+}
+
+.prescription-item h3 {
+    font-size: 1.8em;
+    color: #05668D; 
+}
+
+.prescription-item p {
+    font-size: 1.1em;
+    color: #05668D; 
+}
+
+.prescription-item a {
+    text-decoration: none;
+    color: #05668D; 
+    font-weight: bold;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+footer {
+    background-color: #05668D; 
+    color: white;
+    padding: 20px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}

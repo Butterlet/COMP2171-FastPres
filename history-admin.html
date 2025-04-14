@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Prescription History</title>
+    <link rel="stylesheet" href="history-admin-styles.css">
+</head>
+<body>
+
+<header>
+    <img src="images/fastlogo.png" alt="FastPres Logo">
+    <nav>
+        <a href="management-dashboard.html">Dashboard</a>
+        <a href="review.html">Review Prescription</a>
+        <a href="history-admin.html">View All Orders</a>
+        <a href="cancel.html">Cancel Order</a>
+        <a href="login.html">Logout</a>
+    </nav>
+</header>
+    
+<main>
+    <section class="main">
+        <h1>All Orders</h1>
+        <p>Below is a list of all current orders in the system.</p>
+    </section>
+
+    <section class="prescription-history">
+        <h2>Orders</h2>
+        <div id="admin-prescription-list">
+            <p>Loading orders...</p>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2025 FastPres. All rights reserved.</p>
+</footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Fetch all prescriptions for the admin
+        fetch(`fetch_all_prescriptions.php`)
+            .then(response => response.json())
+            .then(data => {
+                const listContainer = document.getElementById("admin-prescription-list");
+                listContainer.innerHTML = "";
+
+                if (data.error) {
+                    listContainer.innerHTML = `<p>Error: ${data.error}</p>`;
+                    return;
+                }
+
+                if (data.length === 0) {
+                    listContainer.innerHTML = "<p>No orders found in the system.</p>";
+                } else {
+                    data.forEach((prescription, index) => {
+                        const div = document.createElement("div");
+                        div.classList.add("prescription-item");
+                        div.innerHTML = `
+                            <h3>Order ${index + 1}</h3>
+                            <p><strong>User Email:</strong> ${prescription.userEmail}</p>
+                            <p><strong>Receiving Method:</strong> ${prescription.receiving_method}</p>
+                            ${prescription.address && prescription.receiving_method === "delivery" ? `<p><strong>Delivery Address:</strong> ${prescription.address}</p>` : ""}
+                            ${prescription.status === "rejected" ? `<p style="color: red;"><strong>Rejected:</strong> ${prescription.rejectionReason}</p>` : ""}
+                            <a href="${prescription.file_path}" target="_blank">
+                                <img src="${prescription.file_path}" alt="Uploaded Prescription" width="150">
+                            </a>
+                        `;
+                        listContainer.appendChild(div);
+                    });
+                }
+            })
+            .catch(error => {
+                const listContainer = document.getElementById("admin-prescription-list");
+                listContainer.innerHTML = "<p>Error loading orders. Please try again later.</p>";
+                console.error("Fetch error:", error);
+            });
+    });
+</script>
+
+</body>
+</html>

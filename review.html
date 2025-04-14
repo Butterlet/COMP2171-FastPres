@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Prescription - FastPres</title>
+    <link rel="stylesheet" href="review-styles.css">
+</head>
+<body>
+
+<header>
+    <img src="images/fastlogo.png" alt="FastPres Logo">
+    <nav>
+        <a href="review.html">Review Prescription</a>
+        <a href="history-admin.html">View Prescription History</a>
+        <a href="cancel.html">Cancel Order</a>
+        <a href="login.html">Logout</a>
+    </nav>
+</header>
+
+<div class="main-content">
+    <h2>Review Uploaded Prescription</h2>
+    <div id="fileContainer" class="file-container">
+        <p>No prescription uploaded yet.</p>
+    </div>
+
+    <div id="orderDetails" class="order-details" style="display:none;">
+        <p><strong>User Email:</strong> <span id="userEmail"></span></p>
+        <p><strong>Receiving Method:</strong> <span id="receivingMethod"></span></p>
+        <p id="deliveryAddress" style="display:none;"><strong>Delivery Address:</strong> <span id="address"></span></p>
+    </div>
+
+    <!-- Confirmation buttons for admin -->
+    <div id="confirmationSection" class="button-container" style="display:none;">
+        <button id="confirmOrder" class="confirm-btn">Confirm Order</button>
+        <button id="rejectOrder" class="reject-btn">Reject Order</button>
+        <p id="orderStatus"></p>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2025 FastPres. All rights reserved.</p>
+</footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("getLatestPrescription.php")
+            .then(response => response.json())
+            .then(data => {
+                const fileContainer = document.getElementById("fileContainer");
+                const confirmationSection = document.getElementById("confirmationSection");
+                const orderDetails = document.getElementById("orderDetails");
+                const userEmailElement = document.getElementById("userEmail");
+                const receivingMethodElement = document.getElementById("receivingMethod");
+                const deliveryAddressElement = document.getElementById("deliveryAddress");
+                const addressElement = document.getElementById("address");
+
+                if (data.success) {
+                    const fileURL = data.filePath;
+                    const fileType = fileURL.split('.').pop().toLowerCase();
+
+                    // Display the uploaded file
+                    if (['jpg', 'jpeg', 'png'].includes(fileType)) {
+                        fileContainer.innerHTML = `<img src="${fileURL}" alt="Uploaded Prescription" style="max-width: 100%; height: auto;">`;
+                    } else if (fileType === 'pdf') {
+                        fileContainer.innerHTML = `<iframe src="${fileURL}" width="100%" height="600px"></iframe>`;
+                    } else {
+                        fileContainer.innerHTML = `<p>Unsupported file format.</p>`;
+                    }
+
+                    // Display order details
+                    userEmailElement.textContent = data.userEmail;
+                    receivingMethodElement.textContent = data.receivingMethod;
+
+                    if (data.receivingMethod === "delivery") {
+                        deliveryAddressElement.style.display = "block";
+                        addressElement.textContent = data.address;
+                    }
+
+                    confirmationSection.style.display = "block";
+                    orderDetails.style.display = "block";
+
+                    // Add event listeners for confirm and reject buttons
+                    document.getElementById("confirmOrder").addEventListener("click", function () {
+                        updateOrderStatus("confirm");
+                    });
+
+                    document.getElementById("rejectOrder").addEventListener("click", function () {
+                        const reason = prompt("Please provide a reason for rejecting this order:");
+                        if (reason) {
+                            updateOrderStatus("reject", reason);
+                        }
+                    });
+                } else {
+                    fileContainer.innerHTML = `<p>${data.message}</p>`;
+                }
+            })
+            .catch(error => console.error("Error:", error));
+    });
+
+    function updateOrderStatus(action, reason = "") {
+        fetch("updateOrderStatus.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: action, reason: reason })
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("orderStatus").textContent = data.message;
+            if (data.success && action === "reject") {
+                document.getElementById("fileContainer").innerHTML = "<p>No prescription uploaded yet.</p>";
+                document.getElementById("confirmationSection").style.display = "none";
+                document.getElementById("orderDetails").style.display = "none";
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    }
+</script>
+
+</body>
+</html>

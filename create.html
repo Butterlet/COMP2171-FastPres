@@ -30,31 +30,47 @@
     
     <script>
         function validateSignup() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const termsCheckbox = document.getElementById('agree-terms');
+        const firstName = document.getElementById('first-name').value.trim();
+        const surname = document.getElementById('surname').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const termsCheckbox = document.getElementById('agree-terms');
 
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailPattern.test(email)) {
-                alert("Please enter a valid email address.");
-                return;
-            }
-
-            const passwordPattern = /^(?=.*[A-Z])(?=.*[!@#$%^&*?])[A-Za-z\d!@#$%^&*?]{10,}$/;
-            if (!passwordPattern.test(password)) {
-                alert("Password must be at least 10 characters long, contain at least one capital letter, and one special symbol.");
-                return;
-            }
-            
-            if (!termsCheckbox.checked) {
-                alert("You must agree to the Terms of Use to proceed.");
-                return;
-            }
-            
-            alert("Account created successfully!");
-            window.location.href = "index.html"; 
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email)) {
+            alert("Please enter a valid email address.");
+            return;
         }
+
+        const passwordPattern = /^(?=.*[A-Z])(?=.*[!@#$%^&*?])[A-Za-z\d!@#$%^&*?]{7,}$/;
+        if (!passwordPattern.test(password)) {
+            alert("Password must be at least 10 characters long, contain at least one capital letter, and one special symbol.");
+            return;
+        }
+
+        if (!termsCheckbox.checked) {
+            alert("You must agree to the Terms of Use to proceed.");
+            return;
+        }
+
+        // Retrieve existing users from localStorage
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+
+        // Check if the email is already registered
+        if (users.some(user => user.email === email)) {
+            alert("This email is already registered. Please use a different email.");
+            return;
+        }
+
+        // Add the new user to the users array
+        users.push({ firstName, surname, email, password });
+
+        // Save the updated users array to localStorage
+        localStorage.setItem('users', JSON.stringify(users));
+
+        alert("Account created successfully!");
+        window.location.href = "login.html"; // Redirect to login page
+    }
     </script>
 </body>
-</html>
 </html>

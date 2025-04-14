@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Order - FastPres</title>
+    <link rel="stylesheet" href="trackOrder-styles.css">
+</head>
+<body>
+
+<header>
+    <img src="images/fastlogo.png" alt="FastPres Logo">
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="upload.html">Upload Prescription</a>
+        <a href="history.html">View Prescription History</a>
+        <a href="trackOrder.html">Track Order Status</a>
+        <a href="cancel.html">Cancel Order</a>
+        <a href="login.html">Logout</a>
+    </nav>
+</header>
+
+<div class="main-content">
+    <div class="track-container">
+        <h2>Track Your Order</h2>
+        <p>Enter your email to check the status of your order.</p>
+        <form id="trackOrderForm">
+            <input type="email" id="userEmail" placeholder="Enter your email" required>
+            <button type="submit">Track Order</button>
+        </form>
+        <div id="orderStatus" class="status-message"></div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2025 FastPres. All rights reserved.</p>
+</footer>
+
+<script>
+    document.getElementById('trackOrderForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const userEmail = document.getElementById('userEmail').value.trim();
+        const orderStatusElement = document.getElementById('orderStatus');
+
+        orderStatusElement.textContent = "Checking order status...";
+
+        fetch(`fetch_prescriptions.php?userEmail=${encodeURIComponent(userEmail)}`)
+            .then(response => response.json())
+            .then(data => {
+                orderStatusElement.innerHTML = ""; // Clear previous messages
+
+                if (data.error) {
+                    orderStatusElement.textContent = `Error: ${data.error}`;
+                    return;
+                }
+
+                const pickupOrders = data.filter(order => order.receiving_method === "pickup");
+                const deliveryOrders = data.filter(order => order.receiving_method === "delivery");
+
+                if (pickupOrders.length > 0) {
+                    orderStatusElement.innerHTML = `
+                        <p>Your pickup order is confirmed and will be ready in <strong>30 minutes</strong>.</p>
+                        <p>Please present your ID when stopping by.</p>
+                    `;
+                }
+
+                if (deliveryOrders.length > 0) {
+                    orderStatusElement.innerHTML += `
+                        <img src="images/fastlogo.png" alt="FastPres Logo" class="progress-logo">
+                        <div class="progress-container">
+                            <div class="progress-bar" id="progressBar"></div>
+                        </div>
+                        <p>Your delivery order has been received and is being prepared and will arrive in 30 minutes.</p>
+                    `;
+
+                    // Simulate progress bar animation
+                    let progress = 0;
+                    const progressBar = document.getElementById('progressBar');
+                    const interval = setInterval(() => {
+                        if (progress >= 100) {
+                            clearInterval(interval);
+                            orderStatusElement.innerHTML += `<p>Your package is on its way!</p>`;
+                        } else {
+                            progress += 10;
+                            progressBar.style.width = progress + '%';
+                        }
+                    }, 500);
+                }
+
+                if (pickupOrders.length === 0 && deliveryOrders.length === 0) {
+                    orderStatusElement.innerHTML = `
+                        <p>No confirmed orders found for this email.</p>
+                    `;
+                }
+            })
+            .catch(error => {
+                orderStatusElement.textContent = "Error fetching order status. Please try again later.";
+                console.error("Error:", error);
+            });
+    });
+</script>
+
+</body>
+</html>

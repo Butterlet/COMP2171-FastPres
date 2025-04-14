@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Cancel Orders - FastPres</title>
+    <link rel="stylesheet" href="cancel-order-styles.css">
+</head>
+<body>
+
+<header>
+    <img src="images/fastlogo.png" alt="FastPres Logo">
+    <nav>
+        <a href="management-dashboard.html">Dashboard</a>
+        <a href="review.html">Review Prescription</a>
+        <a href="history-admin.html">View All Orders</a>
+        <a href="cancel-order.html">Cancel Orders</a>
+        <a href="login.html">Logout</a>
+    </nav>
+</header>
+
+<div class="main-content">
+    <div class="cancel-container">
+        <h2>Cancel Orders</h2>
+        <p>Below is a list of all orders in the system. Select an order to cancel it.</p>
+        <div id="adminOrderList">
+            <p>Loading orders...</p>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2025 FastPres. All rights reserved.</p>
+</footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const orderList = document.getElementById("adminOrderList");
+
+        // Fetch all orders for the admin
+        fetch("fetch_all_prescriptions.php")
+            .then(response => response.json())
+            .then(data => {
+                orderList.innerHTML = ""; // Clear the loading message
+
+                if (data.error) {
+                    orderList.innerHTML = `<p>Error: ${data.error}</p>`;
+                    return;
+                }
+
+                if (data.length === 0) {
+                    orderList.innerHTML = "<p>No orders found in the system.</p>";
+                } else {
+                    data.forEach((order, index) => {
+                        const orderDiv = document.createElement("div");
+                        orderDiv.classList.add("order-item");
+                        orderDiv.innerHTML = `
+                            <h3>Order ${index + 1}</h3>
+                            <p><strong>User Email:</strong> ${order.userEmail}</p>
+                            <p><strong>Receiving Method:</strong> ${order.receiving_method}</p>
+                            ${order.address && order.receiving_method === "delivery" ? `<p><strong>Delivery Address:</strong> ${order.address}</p>` : ""}
+                            <button class="cancel-btn" data-file="${order.file_name}">Cancel Order</button>
+                        `;
+                        orderList.appendChild(orderDiv);
+                    });
+
+                    // Add event listeners to cancel buttons
+                    document.querySelectorAll(".cancel-btn").forEach(button => {
+                        button.addEventListener("click", function () {
+                            const fileName = this.getAttribute("data-file");
+
+                            if (confirm("Are you sure you want to cancel this order?")) {
+                                fetch("cancelOrder.php", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ fileName })
+                                })
+                                    .then(response => response.json())
+                                    .then(result => {
+                                        if (result.success) {
+                                            alert("Order canceled successfully.");
+                                            this.parentElement.remove(); // Remove the order from the list
+                                        } else {
+                                            alert("Error canceling order: " + result.message);
+                                        }
+                                    })
+                                    .catch(error => console.error("Error:", error));
+                            }
+                        });
+                    });
+                }
+            })
+            .catch(error => {
+                orderList.innerHTML = "<p>Error loading orders. Please try again later.</p>";
+                console.error("Error:", error);
+            });
+    });
+</script>
+
+</body>
+</html>

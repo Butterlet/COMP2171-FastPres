@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prescription Upload - FastPres</title>
+    <title>Order Receiving - FastPres</title>
     <link rel="stylesheet" href="upload-styles.css">
 </head>
 <body>
@@ -14,7 +14,7 @@
         <a href="index.html">Home</a>
         <a href="upload.html">Upload Prescription</a>
         <a href="history.html">View Prescription History</a>
-        <a href="track.html">Track Order Status</a>
+        <a href="trackOrder.html">Track Order Status</a>
         <a href="cancel.html">Cancel Order</a>
         <a href="login.html">Logout</a>
     </nav>
@@ -24,14 +24,26 @@
     <div class="upload-container">
         <h2>Upload Your Prescription</h2>
         <p>Please upload a valid prescription document for verification. Accepted file formats: JPEG, PNG, PDF.</p>
-
-        <form id="uploadForm" enctype="multipart/form-data" method="POST" action="uploadPrescription.php">
+        <form id="orderForm" enctype="multipart/form-data">
             <label for="prescriptionFile">Choose a file to upload:</label>
             <input type="file" id="prescriptionFile" name="prescriptionFile" accept=".jpg, .jpeg, .png, .pdf" required>
             <br><br>
-            <button type="submit">Upload Prescription</button>
+            <h2>Select Receiving Method</h2>
+            <p>Please choose a receiving method for your order.</p>
+            <label for="receivingMethod">Choose a receiving method:</label>
+            <select id="receivingMethod" name="receivingMethod" required>
+                <option value="">Select an option</option>
+                <option value="pickup">Pickup</option>
+                <option value="delivery">Delivery</option>
+            </select>
+            <br><br>
+            <div id="deliveryDetails" style="display: none;">
+                <label for="address">Enter Delivery Address:</label>
+                <input type="text" id="address" name="address" placeholder="Enter your address">
+            </div>
+            <br>
+            <button type="submit">Confirm Order</button>
         </form>
-
         <div id="message" class="message"></div>
         <div id="error" class="error"></div>
     </div>
@@ -42,34 +54,72 @@
 </footer>
 
 <script>
-    document.getElementById('uploadForm').addEventListener('submit', function(event) {
+    document.getElementById('receivingMethod').addEventListener('change', function() {
+        var selectedMethod = this.value;
+        var deliveryDetails = document.getElementById('deliveryDetails');
+        if (selectedMethod === 'delivery') {
+            deliveryDetails.style.display = 'block';
+        } else {
+            deliveryDetails.style.display = 'none';
+        }
+    });
+
+    document.getElementById('orderForm').addEventListener('submit', function(event) {
         event.preventDefault();
-        
+
         var fileInput = document.getElementById('prescriptionFile');
         var file = fileInput.files[0];
+        var method = document.getElementById('receivingMethod').value;
+        var address = document.getElementById('address') ? document.getElementById('address').value.trim() : '';
+        var errorElement = document.getElementById('error');
+        var messageElement = document.getElementById('message');
+
+        errorElement.textContent = '';
+        messageElement.textContent = '';
+        const userEmail = sessionStorage.getItem("loggedInUser"); // Get logged-in user's email
+    if (!userEmail) {
+        alert("You must be logged in to upload a prescription.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("userEmail", userEmail); // Include user's email
+
+        if (!file) {
+            errorElement.textContent = "Please select a file to upload.";
+            return;
+        }
         
-        var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.pdf)$/i;
-        if (!allowedExtensions.exec(file.name)) {
-            document.getElementById('error').textContent = 'Invalid file format. Please upload a JPEG, PNG, or PDF file.';
+        if (!method) {
+            errorElement.textContent = "Please select a receiving method.";
             return;
         }
 
-        document.getElementById('message').textContent = '';
-        document.getElementById('error').textContent = '';
-        
-        var formData = new FormData();
-        formData.append('prescriptionFile', file);
+        if (method === 'delivery' && !address) {
+            errorElement.textContent = "Please enter a delivery address.";
+            return;
+        }
 
-        setTimeout(function() {
-            
-            var success = Math.random() > 0.2; 
+        formData.append("prescriptionFile", file);
+        formData.append("prescriptionFile", file);
+        formData.append("receivingMethod", method);
+        if (method === 'delivery') {
+            formData.append("address", address);
+        }
 
-            if (success) {
-                document.getElementById('message').textContent = 'Prescription uploaded successfully!';
+        fetch("uploadPrescription.php", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                messageElement.textContent = "Order confirmed! Prescription uploaded successfully.";
             } else {
-                document.getElementById('error').textContent = 'Upload failed due to a system error. Please try again later.';
+                messageElement.textContent = "Error: " + data.message;
             }
-        }, 1000); 
+        })
+        .catch(error => console.error("Error:", error));
     });
 </script>
 

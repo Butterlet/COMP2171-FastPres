@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Prescription History</title>
+    <link rel="stylesheet" href="history-styles.css">
+</head>
+<body>
+
+<header>
+    <img src="images/fastlogo.png" alt="FastPres Logo">
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="upload.html">Upload Prescription</a>
+        <a href="history.html">View Prescription History</a>
+        <a href="trackOrder.html">Track Order Status</a>
+        <a href="cancel.html">Cancel Order</a>
+        <a href="login.html">Logout</a>
+    </nav>
+</header>
+    
+<main>
+    <section class="main">
+        <h1>Prescription History</h1>
+        <p>Below are your most recent uploaded prescription.</p>
+    </section>
+
+    <section class="prescription-history">
+        <h2>Latest Uploaded Prescriptions</h2>
+        <div id="prescription-list">
+            <p>Loading prescriptions...</p>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2025 FastPres. All rights reserved.</p>
+</footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const userEmail = sessionStorage.getItem("loggedInUser"); // Get logged-in user's email
+
+        if (!userEmail) {
+            alert("You must be logged in to view your prescription history.");
+            window.location.href = "login.html"; // Redirect to login page
+            return;
+        }
+
+        // Fetch prescriptions for the logged-in user
+        fetch(`fetch_prescriptions.php?userEmail=${encodeURIComponent(userEmail)}`)
+            .then(response => response.json())
+            .then(data => {
+                const listContainer = document.getElementById("prescription-list");
+                listContainer.innerHTML = "";
+
+                if (data.error) {
+                    listContainer.innerHTML = `<p>Error: ${data.error}</p>`;
+                    return;
+                }
+
+                if (data.length === 0) {
+                    listContainer.innerHTML = "<p>No uploaded prescriptions found.</p>";
+                } else {
+                    data.forEach((prescription, index) => {
+                        const div = document.createElement("div");
+                        div.classList.add("prescription-item");
+                        div.innerHTML = `
+                            <h3>Prescription ${index + 1}</h3>
+                            <p><strong>Receiving Method:</strong> ${prescription.receiving_method}</p>
+                            ${prescription.address && prescription.receiving_method === "delivery" ? `<p><strong>Address:</strong> ${prescription.address}</p>` : ""}
+                            ${prescription.status === "rejected" ? `<p style="color: red;"><strong>Rejected:</strong> ${prescription.rejectionReason}</p>` : ""}
+                            <a href="${prescription.file_path}" target="_blank">
+                                <img src="${prescription.file_path}" alt="Uploaded Prescription" width="150">
+                            </a>
+                        `;
+                        listContainer.appendChild(div);
+                    });
+                }
+            })
+            .catch(error => {
+                const listContainer = document.getElementById("prescription-list");
+                listContainer.innerHTML = "<p>Error loading prescriptions.</p>";
+                console.error("Fetch error:", error);
+            });
+    });
+</script>
+
+</body>
+</html>
